@@ -1,12 +1,10 @@
 #include "game.h"
-#include "logger.h"
-#include <stdlib.h>
 
 int main(int argc, char *argv[])
 {
-    if (!initGame())
+    if (runGame() != 0)
     {
-        return 1;
+        return -1;
     }
 
     return 0;
