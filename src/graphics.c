@@ -1,4 +1,5 @@
 #include "graphics.h"
+#include "logger.h"
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
@@ -20,7 +21,7 @@ int initGraphics()
     {
         LOG_ERROR("SDL could not initialize: %s", SDL_GetError());
         closeGraphics();
-        return 0;
+        return -1;
     }
 
     // Create window
@@ -35,7 +36,7 @@ int initGraphics()
     {
         LOG_ERROR("Window could not be created: %s", SDL_GetError());
         closeGraphics();
-        return 0;
+        return -1;
     }
 
     // Create renderer for window
@@ -44,7 +45,7 @@ int initGraphics()
     {
         LOG_ERROR("Renderer could not be created: %s", SDL_GetError());
         closeGraphics();
-        return 0;
+        return -1;
     }
 
     // Initialize renderer color
@@ -55,7 +56,7 @@ int initGraphics()
     {
         LOG_ERROR("SDL_image could not initialize: %s", IMG_GetError());
         closeGraphics();
-        return 0;
+        return -1;
     }
 
     // Initialize SDL_ttf
@@ -63,22 +64,22 @@ int initGraphics()
     {
         LOG_ERROR("SDL_ttf could not initialize: %s", TTF_GetError());
         closeGraphics();
-        return 0;
+        return -1;
     }
 
     // Load fonts
-    fontBangers_SM = TTF_OpenFont("assets/fonts/Bangers.ttf", 16);
-    fontBangers_LG = TTF_OpenFont("assets/fonts/Bangers.ttf", 32);
-    fontBreeSerif_SM = TTF_OpenFont("assets/fonts/BreeSerif.ttf", 16);
-    fontBreeSerif_LG = TTF_OpenFont("assets/fonts/BreeSerif.ttf", 32);
+    fontBangers_SM = TTF_OpenFont("../resources/assets/fonts/Bangers.ttf", 32);
+    fontBangers_LG = TTF_OpenFont("../resources/assets/fonts/Bangers.ttf", 60);
+    fontBreeSerif_SM = TTF_OpenFont("../resources/assets/fonts/BreeSerif.ttf", 32);
+    fontBreeSerif_LG = TTF_OpenFont("../resources/assets/fonts/BreeSerif.ttf", 60);
     if (!fontBangers_SM || !fontBangers_LG || !fontBreeSerif_SM || !fontBreeSerif_LG)
     {
         LOG_ERROR("Failed to load fonts: %s", TTF_GetError());
         closeGraphics();
-        return 0;
+        return -1;
     }
 
-    return 1;
+    return 0;
 }
 
 void closeGraphics()
@@ -155,7 +156,7 @@ void destroyGameObject(GameObject *obj)
 {
     if (obj)
     {
-        removeTexture(obj->texture);
+        SDL_DestroyTexture(obj->texture);
         free(obj);
     }
 }
@@ -184,6 +185,46 @@ void renderTexture(SDL_Texture *texture, int x, int y)
     dst.y = y;
     SDL_QueryTexture(texture, NULL, NULL, &dst.w, &dst.h);
     SDL_RenderCopy(renderer, texture, NULL, &dst);
+}
+
+void renderText(const char *text, Font font, Color color, int x, int y)
+{
+    TTF_Font *ttfFont = getSDLFont(font);
+    SDL_Color sdlColor = getSDLColor(color);
+    SDL_Surface *surface = TTF_RenderText_Solid(ttfFont, text, sdlColor);
+
+    if (!surface)
+    {
+        LOG_ERROR("Failed to create text surface! TTF_Error: %s\n", TTF_GetError());
+        TTF_CloseFont(ttfFont);
+        return;
+    }
+
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+    if (!texture)
+    {
+        LOG_ERROR("Failed to create text texture! SDL_Error: %s\n", SDL_GetError());
+        SDL_FreeSurface(surface);
+        TTF_CloseFont(ttfFont);
+        return;
+    }
+
+    renderTexture(texture, x, y);
+
+    SDL_FreeSurface(surface);
+    SDL_DestroyTexture(texture);
+}
+
+void clearScreen(Color color)
+{
+    SDL_Color sdlColor = getSDLColor(color);
+    SDL_SetRenderDrawColor(renderer, sdlColor.r, sdlColor.g, sdlColor.b, sdlColor.a);
+    SDL_RenderClear(renderer);
+}
+
+void presentScreen()
+{
+    SDL_RenderPresent(renderer);
 }
 
 SDL_Texture *loadTexture(const char *file)
@@ -225,9 +266,9 @@ TTF_Font *getSDLFont(Font font)
         return fontBangers_SM;
     case FONT_BANGERS_LG:
         return fontBangers_LG;
-    case FONT_BREESERIF_SM:
+    case FONT_BREE_SERIF_SM:
         return fontBreeSerif_SM;
-    case FONT_BREESERIF_LG:
+    case FONT_BREE_SERIF_LG:
         return fontBreeSerif_LG;
     default:
         return fontBangers_SM;

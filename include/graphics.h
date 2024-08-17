@@ -8,8 +8,8 @@ typedef enum
 {
     FONT_BANGERS_SM,
     FONT_BANGERS_LG,
-    FONT_BREESERIF_SM,
-    FONT_BREESERIF_LG
+    FONT_BREE_SERIF_SM,
+    FONT_BREE_SERIF_LG
 } Font;
 
 typedef enum
@@ -29,9 +29,16 @@ typedef struct
 
 int initGraphics();
 void closeGraphics();
+SDL_Texture *loadTexture(const char *file);
 GameObject *createGameObject(const char *texture_path, int x, int y, int width, int height);
 void destroyGameObject(GameObject *obj);
 void moveGameObject(GameObject *obj, int dx, int dy);
 void renderGameObject(GameObject *obj);
+void renderText(const char *text, Font font, Color color, int x, int y);
+void clearScreen(Color backgroundColor);
+void presentScreen();
+SDL_Color getSDLColor(Color color);
+TTF_Font *getSDLFont(Font font);
+void renderTexture(SDL_Texture *texture, int x, int y);
 
 #endif // GRAPHICS_H
