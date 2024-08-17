@@ -5,15 +5,13 @@
 #include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 800
-
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
 static TTF_Font *fontBangers_SM = NULL;
 static TTF_Font *fontBangers_LG = NULL;
 static TTF_Font *fontBreeSerif_SM = NULL;
 static TTF_Font *fontBreeSerif_LG = NULL;
+static SDL_Texture *backgroundTexture = NULL;
 
 int initGraphics()
 {
@@ -69,12 +67,31 @@ int initGraphics()
 
     // Load fonts
     fontBangers_SM = TTF_OpenFont("../resources/assets/fonts/Bangers.ttf", 32);
-    fontBangers_LG = TTF_OpenFont("../resources/assets/fonts/Bangers.ttf", 60);
-    fontBreeSerif_SM = TTF_OpenFont("../resources/assets/fonts/BreeSerif.ttf", 32);
-    fontBreeSerif_LG = TTF_OpenFont("../resources/assets/fonts/BreeSerif.ttf", 60);
+    fontBangers_LG = TTF_OpenFont("../resources/assets/fonts/Bangers.ttf", 84);
+    fontBreeSerif_SM = TTF_OpenFont("../resources/assets/fonts/BreeSerif.ttf", 18);
+    fontBreeSerif_LG = TTF_OpenFont("../resources/assets/fonts/BreeSerif.ttf", 84);
     if (!fontBangers_SM || !fontBangers_LG || !fontBreeSerif_SM || !fontBreeSerif_LG)
     {
         LOG_ERROR("Failed to load fonts: %s", TTF_GetError());
+        closeGraphics();
+        return -1;
+    }
+
+    // set window icon
+    SDL_Surface *iconSurface = IMG_Load("../resources/assets/images/logo.png");
+    if (!iconSurface)
+    {
+        LOG_ERROR("Window icon could not be loaded: %s", IMG_GetError());
+        closeGraphics();
+        return -1;
+    }
+    SDL_SetWindowIcon(window, iconSurface);
+    SDL_FreeSurface(iconSurface);
+
+    // Load background
+    if (loadBackground("../resources/assets/images/background.png") != 0)
+    {
+        LOG_ERROR("Failed to load background");
         closeGraphics();
         return -1;
     }
@@ -174,17 +191,27 @@ void renderGameObject(GameObject *obj)
 {
     if (obj && obj->texture)
     {
-        renderTexture(obj->texture, obj->x, obj->y);
+        renderTexture(obj->texture, obj->x, obj->y, obj->width, obj->height);
     }
 }
 
-void renderTexture(SDL_Texture *texture, int x, int y)
+void renderTexture(SDL_Texture *texture, int x, int y, int width, int height)
 {
-    SDL_Rect dst;
-    dst.x = x;
-    dst.y = y;
-    SDL_QueryTexture(texture, NULL, NULL, &dst.w, &dst.h);
-    SDL_RenderCopy(renderer, texture, NULL, &dst);
+    SDL_Rect destRect;
+    destRect.x = x;
+    destRect.y = y;
+
+    if (width > 0 && height > 0)
+    {
+        destRect.w = width;
+        destRect.h = height;
+    }
+    else
+    {
+        SDL_QueryTexture(texture, NULL, NULL, &destRect.w, &destRect.h);
+    }
+
+    SDL_RenderCopy(renderer, texture, NULL, &destRect);
 }
 
 void renderText(const char *text, Font font, Color color, int x, int y)
@@ -209,7 +236,7 @@ void renderText(const char *text, Font font, Color color, int x, int y)
         return;
     }
 
-    renderTexture(texture, x, y);
+    renderTexture(texture, x, y, -1, -1);
 
     SDL_FreeSurface(surface);
     SDL_DestroyTexture(texture);
@@ -253,6 +280,8 @@ SDL_Color getSDLColor(Color color)
         return (SDL_Color){0, 255, 0, 255};
     case COLOR_BLUE:
         return (SDL_Color){0, 0, 255, 255};
+    case COLOR_GOLD:
+        return (SDL_Color){204, 172, 0, 255};
     default:
         return (SDL_Color){255, 255, 255, 255};
     }
@@ -272,5 +301,32 @@ TTF_Font *getSDLFont(Font font)
         return fontBreeSerif_LG;
     default:
         return fontBangers_SM;
+    }
+}
+
+int loadBackground(const char *filePath)
+{
+    // Load the background texture
+    backgroundTexture = loadTexture(filePath);
+    if (!backgroundTexture)
+    {
+        LOG_ERROR("Failed to load background texture: %s", SDL_GetError());
+        return -1;
+    }
+    return 0;
+}
+
+void renderBackground()
+{
+    if (backgroundTexture)
+    {
+        // Clear the screen
+        SDL_RenderClear(renderer);
+
+        // Render the background texture
+        SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
+
+        // Update the screen
+        SDL_RenderPresent(renderer);
     }
 }

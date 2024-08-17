@@ -4,6 +4,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 800
+
 typedef enum
 {
     FONT_BANGERS_SM,
@@ -17,7 +20,8 @@ typedef enum
     COLOR_WHITE,
     COLOR_RED,
     COLOR_GREEN,
-    COLOR_BLUE
+    COLOR_BLUE,
+    COLOR_GOLD
 } Color;
 
 typedef struct
@@ -39,6 +43,8 @@ void clearScreen(Color backgroundColor);
 void presentScreen();
 SDL_Color getSDLColor(Color color);
 TTF_Font *getSDLFont(Font font);
-void renderTexture(SDL_Texture *texture, int x, int y);
+void renderTexture(SDL_Texture *texture, int x, int y, int width, int height);
+int loadBackground(const char *filepath);
+void renderBackground(void);
 
 #endif // GRAPHICS_H
