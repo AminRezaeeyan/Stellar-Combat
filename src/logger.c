@@ -7,7 +7,7 @@ static FILE *logFile = NULL;
 int initLogger(const char *filename)
 {
     logFile = fopen(filename, "a");
-    return logFile != NULL;
+    return logFile != NULL ? 0 : -1;
 }
 
 void closeLogger()
