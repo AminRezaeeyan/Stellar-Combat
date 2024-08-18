@@ -1,7 +1,11 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
+#define SDL_MAIN_HANDLED
+
+#include "logger.h"
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
 #define WINDOW_WIDTH 800
@@ -23,6 +27,23 @@ typedef enum
     COLOR_BLUE,
     COLOR_GOLD
 } Color;
+
+typedef enum
+{
+    EVENT_NONE,
+    EVENT_QUIT,
+    EVENT_KEY_UP,
+    EVENT_KEY_DOWN,
+    EVENT_KEY_LEFT,
+    EVENT_KEY_RIGHT,
+    EVENT_KEY_W,
+    EVENT_KEY_A,
+    EVENT_KEY_S,
+    EVENT_KEY_D,
+    EVENT_KEY_ENTER,
+    EVENT_KEY_SPACE,
+    EVENT_KEY_OTHER
+} EventType;
 
 typedef struct
 {
@@ -46,5 +67,6 @@ TTF_Font *getSDLFont(Font font);
 void renderTexture(SDL_Texture *texture, int x, int y, int width, int height);
 int loadBackground(const char *filepath);
 void renderBackground(void);
+EventType pollEvent();
 
 #endif // GRAPHICS_H

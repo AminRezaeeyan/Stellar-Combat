@@ -1,9 +1,4 @@
 #include "graphics.h"
-#include "logger.h"
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_ttf.h>
-#include <stdio.h>
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
@@ -329,4 +324,46 @@ void renderBackground()
         // Update the screen
         SDL_RenderPresent(renderer);
     }
+}
+
+EventType pollEvent()
+{
+    SDL_Event event;
+    if (SDL_PollEvent(&event))
+    {
+        if (event.type == SDL_QUIT)
+        {
+            return EVENT_QUIT;
+        }
+        else if (event.type == SDL_KEYDOWN)
+        {
+            switch (event.key.keysym.sym)
+            {
+            case SDLK_UP:
+                return EVENT_KEY_UP;
+            case SDLK_DOWN:
+                return EVENT_KEY_DOWN;
+            case SDLK_LEFT:
+                return EVENT_KEY_LEFT;
+            case SDLK_RIGHT:
+                return EVENT_KEY_RIGHT;
+            case SDLK_w:
+                return EVENT_KEY_W;
+            case SDLK_a:
+                return EVENT_KEY_A;
+            case SDLK_s:
+                return EVENT_KEY_S;
+            case SDLK_d:
+                return EVENT_KEY_D;
+            case SDLK_RETURN:
+            case SDLK_KP_ENTER:
+                return EVENT_KEY_ENTER;
+            case SDLK_SPACE:
+                return EVENT_KEY_SPACE;
+            default:
+                return EVENT_KEY_OTHER;
+            }
+        }
+    }
+    return EVENT_NONE;
 }
