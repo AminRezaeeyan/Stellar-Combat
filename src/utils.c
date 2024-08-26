@@ -1,8 +1,4 @@
 #include "utils.h"
-#include "logger.h"
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
 
 // Check if a file exists
 int fileExists(const char *filename)
@@ -14,35 +10,6 @@ int fileExists(const char *filename)
         return 1;
     }
     return 0;
-}
-
-// Read the entire content of a file into a string
-char *readFile(const char *filename)
-{
-    FILE *file = fopen(filename, "r");
-    if (!file)
-    {
-        LOG_ERROR("Could not open file for reading: %s", filename);
-        return NULL;
-    }
-
-    fseek(file, 0, SEEK_END);
-    long length = ftell(file);
-    fseek(file, 0, SEEK_SET);
-
-    char *content = (char *)malloc(length + 1);
-    if (!content)
-    {
-        LOG_ERROR("Memory allocation failed for reading file: %s", filename);
-        fclose(file);
-        return NULL;
-    }
-
-    fread(content, 1, length, file);
-    content[length] = '\0';
-
-    fclose(file);
-    return content;
 }
 
 // Append a string to the end of a file
@@ -65,20 +32,57 @@ char *trimWhitespace(char *str)
 {
     char *end;
 
-    // Trim leading space
+    // Trim leading spaces
     while (isspace((unsigned char)*str))
         str++;
 
     if (*str == 0) // All spaces?
         return str;
 
-    // Trim trailing space
+    // Trim trailing spaces
     end = str + strlen(str) - 1;
     while (end > str && isspace((unsigned char)*end))
         end--;
 
-    // Write new null terminator
+    // Write new null terminator character
     end[1] = '\0';
 
     return str;
+}
+
+void writeCSV(const char *filename, int numFields, ...)
+{
+    FILE *file = fopen(filename, "a");
+    if (!file)
+    {
+        LOG_ERROR("Failed to open the csv file");
+        return;
+    }
+
+    va_list args;
+    va_start(args, numFields);
+
+    for (int i = 0; i < numFields; i++)
+    {
+        const char *field = va_arg(args, const char *);
+        fprintf(file, "%s", field);
+        if (i < numFields - 1)
+        {
+            fprintf(file, ",");
+        }
+    }
+    fprintf(file, "\n");
+
+    va_end(args);
+    fclose(file);
+}
+
+char *generateTimestamp()
+{
+    static char buffer[20];
+    time_t now = time(NULL);
+    struct tm *t = localtime(&now);
+
+    strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M", t);
+    return buffer;
 }

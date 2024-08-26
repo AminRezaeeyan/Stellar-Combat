@@ -1,14 +1,23 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include "logger.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <stdarg.h>
+#include <ctype.h>
 
 // File handling functions
 int fileExists(const char *filename);
-char *readFile(const char *filename);
 int appendToFile(const char *filename, const char *content);
+void writeCSV(const char *filename, int numFields, ...);
 
 // String manipulation functions
 char *trimWhitespace(char *str);
 
-#endif // UTILS_H
+// Timestamp functions
+char *generateTimestamp();
+
+#endif
