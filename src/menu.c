@@ -19,8 +19,9 @@ void renderMenu(MenuOption selectedOption)
 MenuOption runMenu()
 {
     GameObject *logo = createGameObject("../resources/assets/images/logo.png", WINDOW_WIDTH - 450, 0, 450, 450);
-    renderGameObject(logo);
 
+    renderBackground();
+    renderGameObject(logo);
     renderText("Developed by: Amin Rezaeeyan", FONT_BREE_SERIF_SM, COLOR_WHITE, 10, WINDOW_HEIGHT - 50);
     renderText("Use Arrow Keys or WASD to Navigate", FONT_BREE_SERIF_SM, COLOR_WHITE, WINDOW_WIDTH - 310, WINDOW_HEIGHT - 50);
 
