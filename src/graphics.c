@@ -5,6 +5,7 @@ static SDL_Renderer *renderer = NULL;
 static TTF_Font *fontBangers_SM = NULL;
 static TTF_Font *fontBangers_LG = NULL;
 static TTF_Font *fontBreeSerif_SM = NULL;
+static TTF_Font *fontBreeSerif_MD = NULL;
 static TTF_Font *fontBreeSerif_LG = NULL;
 static SDL_Texture *backgroundTexture = NULL;
 
@@ -64,8 +65,9 @@ int initGraphics()
     fontBangers_SM = TTF_OpenFont("../resources/assets/fonts/Bangers.ttf", 32);
     fontBangers_LG = TTF_OpenFont("../resources/assets/fonts/Bangers.ttf", 84);
     fontBreeSerif_SM = TTF_OpenFont("../resources/assets/fonts/BreeSerif.ttf", 18);
+    fontBreeSerif_MD = TTF_OpenFont("../resources/assets/fonts/BreeSerif.ttf", 40);
     fontBreeSerif_LG = TTF_OpenFont("../resources/assets/fonts/BreeSerif.ttf", 84);
-    if (!fontBangers_SM || !fontBangers_LG || !fontBreeSerif_SM || !fontBreeSerif_LG)
+    if (!fontBangers_SM || !fontBangers_LG || !fontBreeSerif_SM || !fontBreeSerif_MD || !fontBreeSerif_LG)
     {
         LOG_ERROR("Failed to load fonts: %s", TTF_GetError());
         closeGraphics();
@@ -110,6 +112,11 @@ void closeGraphics()
     {
         TTF_CloseFont(fontBreeSerif_SM);
         fontBreeSerif_SM = NULL;
+    }
+    if (fontBreeSerif_MD)
+    {
+        TTF_CloseFont(fontBreeSerif_MD);
+        fontBreeSerif_MD = NULL;
     }
     if (fontBreeSerif_LG)
     {
@@ -274,7 +281,7 @@ SDL_Color getSDLColor(Color color)
     case COLOR_GREEN:
         return (SDL_Color){0, 255, 0, 255};
     case COLOR_BLUE:
-        return (SDL_Color){0, 0, 255, 255};
+        return (SDL_Color){5, 226, 255, 255};
     case COLOR_GOLD:
         return (SDL_Color){204, 172, 0, 255};
     default:
@@ -292,6 +299,8 @@ TTF_Font *getSDLFont(Font font)
         return fontBangers_LG;
     case FONT_BREE_SERIF_SM:
         return fontBreeSerif_SM;
+    case FONT_BREE_SERIF_MD:
+        return fontBreeSerif_MD;
     case FONT_BREE_SERIF_LG:
         return fontBreeSerif_LG;
     default:
@@ -366,4 +375,22 @@ EventType pollEvent()
         }
     }
     return EVENT_NONE;
+}
+
+void waitForKey()
+{
+    EventType eventType = EVENT_NONE;
+    while (eventType == EVENT_NONE)
+    {
+        eventType = pollEvent();
+    }
+    if (eventType == EVENT_QUIT)
+        exit(0);
+}
+
+void renderLine(int x1, int y1, int x2, int y2, Color color)
+{
+    SDL_Color sdlColor = getSDLColor(color);
+    SDL_SetRenderDrawColor(renderer, sdlColor.r, sdlColor.g, sdlColor.b, sdlColor.a);
+    SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
 }

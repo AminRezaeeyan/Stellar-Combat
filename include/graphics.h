@@ -16,6 +16,7 @@ typedef enum
     FONT_BANGERS_SM,
     FONT_BANGERS_LG,
     FONT_BREE_SERIF_SM,
+    FONT_BREE_SERIF_MD,
     FONT_BREE_SERIF_LG
 } Font;
 
@@ -60,6 +61,7 @@ void destroyGameObject(GameObject *obj);
 void moveGameObject(GameObject *obj, int dx, int dy);
 void renderGameObject(GameObject *obj);
 void renderText(const char *text, Font font, Color color, int x, int y);
+void renderLine(int x1, int y1, int x2, int y2, Color color);
 void clearScreen(Color backgroundColor);
 void presentScreen();
 SDL_Color getSDLColor(Color color);
@@ -68,5 +70,6 @@ void renderTexture(SDL_Texture *texture, int x, int y, int width, int height);
 int loadBackground(const char *filepath);
 void renderBackground(void);
 EventType pollEvent();
+void waitForKey();
 
 #endif // GRAPHICS_H
