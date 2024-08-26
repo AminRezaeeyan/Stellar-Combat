@@ -4,6 +4,7 @@
 #include "logger.h"
 #include "graphics.h"
 #include "menu.h"
+#include "records.h"
 
 int setUpGame(void);
 void closeGame(void);

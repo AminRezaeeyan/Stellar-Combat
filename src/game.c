@@ -24,11 +24,12 @@ int runGame()
     }
     atexit(closeGame);
 
-    renderBackground();
-
     int running = 1;
     while (running)
     {
+        clearScreen(COLOR_WHITE);
+        renderBackground();
+
         MenuOption selectedOption = runMenu();
 
         switch (selectedOption)
@@ -37,7 +38,7 @@ int runGame()
             runGameLoop();
             break;
         case MENU_RECORDS:
-            // TODO
+            displayRecords();
             break;
         case MENU_EXIT:
             running = 0;
