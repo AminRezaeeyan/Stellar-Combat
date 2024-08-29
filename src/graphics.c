@@ -3,6 +3,7 @@
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
 static TTF_Font *fontBangers_SM = NULL;
+static TTF_Font *fontBangers_MD = NULL;
 static TTF_Font *fontBangers_LG = NULL;
 static TTF_Font *fontBreeSerif_SM = NULL;
 static TTF_Font *fontBreeSerif_MD = NULL;
@@ -63,11 +64,12 @@ int initGraphics()
 
     // Load fonts
     fontBangers_SM = TTF_OpenFont("../resources/assets/fonts/Bangers.ttf", 36);
-    fontBangers_LG = TTF_OpenFont("../resources/assets/fonts/Bangers.ttf", 42);
+    fontBangers_MD = TTF_OpenFont("../resources/assets/fonts/Bangers.ttf", 42);
+    fontBangers_LG = TTF_OpenFont("../resources/assets/fonts/Bangers.ttf", 90);
     fontBreeSerif_SM = TTF_OpenFont("../resources/assets/fonts/BreeSerif.ttf", 18);
     fontBreeSerif_MD = TTF_OpenFont("../resources/assets/fonts/BreeSerif.ttf", 40);
     fontBreeSerif_LG = TTF_OpenFont("../resources/assets/fonts/BreeSerif.ttf", 84);
-    if (!fontBangers_SM || !fontBangers_LG || !fontBreeSerif_SM || !fontBreeSerif_MD || !fontBreeSerif_LG)
+    if (!fontBangers_SM || !fontBangers_MD || !fontBangers_LG || !fontBreeSerif_SM || !fontBreeSerif_MD || !fontBreeSerif_LG)
     {
         LOG_ERROR("Failed to load fonts: %s", TTF_GetError());
         closeGraphics();
@@ -102,6 +104,11 @@ void closeGraphics()
     {
         TTF_CloseFont(fontBangers_SM);
         fontBangers_SM = NULL;
+    }
+    if (fontBangers_MD)
+    {
+        TTF_CloseFont(fontBangers_MD);
+        fontBangers_MD = NULL;
     }
     if (fontBangers_LG)
     {
@@ -295,6 +302,8 @@ TTF_Font *getSDLFont(Font font)
     {
     case FONT_BANGERS_SM:
         return fontBangers_SM;
+    case FONT_BANGERS_MD:
+        return fontBangers_MD;
     case FONT_BANGERS_LG:
         return fontBangers_LG;
     case FONT_BREE_SERIF_SM:

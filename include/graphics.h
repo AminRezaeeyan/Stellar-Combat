@@ -23,6 +23,7 @@
 typedef enum
 {
     FONT_BANGERS_SM,
+    FONT_BANGERS_MD,
     FONT_BANGERS_LG,
     FONT_BREE_SERIF_SM,
     FONT_BREE_SERIF_MD,
