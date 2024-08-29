@@ -1,5 +1,10 @@
 #include "utils.h"
 
+int countDigits(int n)
+{
+    return (n == 0) ? 1 : (int)log10(n) + 1;
+}
+
 // Check if a file exists
 int fileExists(const char *filename)
 {

@@ -8,6 +8,10 @@
 #include <time.h>
 #include <stdarg.h>
 #include <ctype.h>
+#include <math.h>
+
+// Number functions
+int countDigits(int n);
 
 // File handling functions
 int fileExists(const char *filename);
