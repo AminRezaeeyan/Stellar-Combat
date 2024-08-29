@@ -24,5 +24,7 @@ void renderScore();
 void updateScoreByInterval();
 void displayGuide();
 void pause();
+void gameOver();
+void resetGame();
 
 #endif

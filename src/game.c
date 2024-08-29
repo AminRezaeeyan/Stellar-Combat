@@ -6,8 +6,8 @@ GameObject *halfHeart = NULL;
 GameObject *enemies[10];
 GameObject *bullets[10];
 
-float health = 5.0;
-int score = 0;
+float health;
+int score;
 
 int backgroundY1 = 0;
 int backgroundY2 = -WINDOW_HEIGHT;
@@ -63,6 +63,7 @@ int runGame()
 
 void runGameLoop()
 {
+    resetGame();
     displayGuide();
 
     Uint32 startTicks, endTicks, frameTime;
@@ -92,6 +93,7 @@ void runGameLoop()
             delay(FRAME_DELAY - frameTime);
         }
     }
+    gameOver();
 }
 
 int handleEvents()
@@ -253,7 +255,7 @@ void renderScore()
     int digitsCount = countDigits(score);
     char scoreString[10];
     sprintf(scoreString, "%d", score);
-    renderText(scoreString, FONT_BANGERS_LG, COLOR_WHITE, WINDOW_WIDTH - 20 * digitsCount - 5, 10);
+    renderText(scoreString, FONT_BANGERS_MD, COLOR_WHITE, WINDOW_WIDTH - 20 * digitsCount - 5, 10);
 }
 
 void updateScoreByInterval()
@@ -291,7 +293,50 @@ void displayGuide()
 
 void pause()
 {
-    renderText("Pause", FONT_BANGERS_LG, COLOR_RED, 350, 10);
+    renderText("Paused", FONT_BANGERS_MD, COLOR_RED, 350, 10);
     presentScreen();
     waitForKey();
+}
+
+void gameOver()
+{
+    Record record = createRecord(score);
+    addRecord(record);
+
+    int highScore = getHighestScore();
+
+    char scoreString[10];
+    char highScoreString[10];
+    sprintf(scoreString, "%d", score);
+    sprintf(highScoreString, "%d", highScore);
+
+    clearScreen(COLOR_WHITE);
+    renderBackground(0, 0);
+    renderText("Game Over!", FONT_BANGERS_LG, COLOR_RED, 200, 200);
+    renderText("Your Score:", FONT_BANGERS_MD, COLOR_BLUE, 250, 420);
+    renderText(scoreString, FONT_BANGERS_MD, COLOR_WHITE, 450, 420);
+    renderText("High Score:", FONT_BANGERS_MD, COLOR_BLUE, 250, 520);
+    renderText(highScoreString, FONT_BANGERS_MD, COLOR_WHITE, 450, 520);
+    renderText("Press any key to continue", FONT_BANGERS_SM, COLOR_GOLD, 200, 700);
+
+    if (score == highScore)
+        renderText("New Record!", FONT_BANGERS_MD, COLOR_GREEN, 300, 320);
+
+    presentScreen();
+
+    waitForKey();
+}
+
+void resetGame()
+{
+    health = 5.0;
+    score = 0;
+
+    player->x = 340;
+    player->y = 640;
+
+    for (int i = 0; i < 10; i++)
+    {
+        bullets[i] = enemies[i] = 0;
+    }
 }
