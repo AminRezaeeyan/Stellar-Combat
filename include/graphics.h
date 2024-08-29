@@ -8,8 +8,17 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
+#define FPS 60
+#define FRAME_DELAY 1000 / FPS
+
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 800
+
+#define BACKGROUND "../resources/assets/images/background.png"
+#define SPACESHIP "../resources/assets/images/spaceship.png"
+#define FULL_HEART "../resources/assets/images/full-heart.png"
+#define HALF_HEART "../resources/assets/images/half-heart.png"
+#define BULLET "../resources/assets/images/bullet.png"
 
 typedef enum
 {
@@ -33,6 +42,7 @@ typedef enum
 {
     EVENT_NONE,
     EVENT_QUIT,
+    EVENT_KEY_ESC,
     EVENT_KEY_UP,
     EVENT_KEY_DOWN,
     EVENT_KEY_LEFT,
@@ -41,6 +51,7 @@ typedef enum
     EVENT_KEY_A,
     EVENT_KEY_S,
     EVENT_KEY_D,
+    EVENT_KEY_P,
     EVENT_KEY_ENTER,
     EVENT_KEY_SPACE,
     EVENT_KEY_OTHER
@@ -68,8 +79,10 @@ SDL_Color getSDLColor(Color color);
 TTF_Font *getSDLFont(Font font);
 void renderTexture(SDL_Texture *texture, int x, int y, int width, int height);
 int loadBackground(const char *filepath);
-void renderBackground(void);
+void renderBackground(int x, int y);
 EventType pollEvent();
 void waitForKey();
+Uint32 getTicks();
+void delay(Uint32 ms);
 
 #endif // GRAPHICS_H

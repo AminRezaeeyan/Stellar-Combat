@@ -62,8 +62,8 @@ int initGraphics()
     }
 
     // Load fonts
-    fontBangers_SM = TTF_OpenFont("../resources/assets/fonts/Bangers.ttf", 32);
-    fontBangers_LG = TTF_OpenFont("../resources/assets/fonts/Bangers.ttf", 84);
+    fontBangers_SM = TTF_OpenFont("../resources/assets/fonts/Bangers.ttf", 36);
+    fontBangers_LG = TTF_OpenFont("../resources/assets/fonts/Bangers.ttf", 42);
     fontBreeSerif_SM = TTF_OpenFont("../resources/assets/fonts/BreeSerif.ttf", 18);
     fontBreeSerif_MD = TTF_OpenFont("../resources/assets/fonts/BreeSerif.ttf", 40);
     fontBreeSerif_LG = TTF_OpenFont("../resources/assets/fonts/BreeSerif.ttf", 84);
@@ -86,7 +86,7 @@ int initGraphics()
     SDL_FreeSurface(iconSurface);
 
     // Load background
-    if (loadBackground("../resources/assets/images/background.png") != 0)
+    if (loadBackground(BACKGROUND) != 0)
     {
         LOG_ERROR("Failed to load background");
         closeGraphics();
@@ -320,18 +320,11 @@ int loadBackground(const char *filePath)
     return 0;
 }
 
-void renderBackground()
+void renderBackground(int x, int y)
 {
     if (backgroundTexture)
     {
-        // Clear the screen
-        SDL_RenderClear(renderer);
-
-        // Render the background texture
-        SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
-
-        // Update the screen
-        SDL_RenderPresent(renderer);
+        renderTexture(backgroundTexture, x, y, WINDOW_WIDTH, WINDOW_HEIGHT);
     }
 }
 
@@ -364,9 +357,13 @@ EventType pollEvent()
                 return EVENT_KEY_S;
             case SDLK_d:
                 return EVENT_KEY_D;
+            case SDLK_p:
+                return EVENT_KEY_P;
             case SDLK_RETURN:
             case SDLK_KP_ENTER:
                 return EVENT_KEY_ENTER;
+            case SDLK_ESCAPE:
+                return EVENT_KEY_ESC;
             case SDLK_SPACE:
                 return EVENT_KEY_SPACE;
             default:
@@ -393,4 +390,14 @@ void renderLine(int x1, int y1, int x2, int y2, Color color)
     SDL_Color sdlColor = getSDLColor(color);
     SDL_SetRenderDrawColor(renderer, sdlColor.r, sdlColor.g, sdlColor.b, sdlColor.a);
     SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
+}
+
+Uint32 getTicks()
+{
+    return SDL_GetTicks();
+}
+
+void delay(Uint32 ms)
+{
+    SDL_Delay(ms);
 }
