@@ -88,7 +88,7 @@ int getHighestScore()
 void displayRecords()
 {
     clearScreen(COLOR_WHITE);
-    renderBackground();
+    renderBackground(0, 0);
 
     Font fontLG = FONT_BREE_SERIF_LG;
     Font fontMD = FONT_BREE_SERIF_MD;
