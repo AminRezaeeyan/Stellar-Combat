@@ -118,8 +118,8 @@ void displayRecords()
             char timestamp[20];
 
             sprintf(index, "%d", i + 1);
-            sprintf(score, "%d", records[i].score);
-            strcpy(timestamp, records[i].timestamp);
+            sprintf(score, "%d", records[numRecords - i - 1].score);
+            strcpy(timestamp, records[numRecords - i - 1].timestamp);
 
             renderText(index, fontMD, COLOR_BLUE, 20, 250 + i * 50);
             renderText(score, fontMD, COLOR_WHITE, 200, 250 + i * 50);
