@@ -2,13 +2,13 @@
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
+static SDL_Texture *backgroundTexture = NULL;
 static TTF_Font *fontBangers_SM = NULL;
 static TTF_Font *fontBangers_MD = NULL;
 static TTF_Font *fontBangers_LG = NULL;
 static TTF_Font *fontBreeSerif_SM = NULL;
 static TTF_Font *fontBreeSerif_MD = NULL;
 static TTF_Font *fontBreeSerif_LG = NULL;
-static SDL_Texture *backgroundTexture = NULL;
 
 int initGraphics()
 {
@@ -43,9 +43,6 @@ int initGraphics()
         return -1;
     }
 
-    // Initialize renderer color
-    // SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-
     // Initialize SDL_image
     if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
     {
@@ -77,7 +74,7 @@ int initGraphics()
     }
 
     // set window icon
-    SDL_Surface *iconSurface = IMG_Load("../resources/assets/images/logo.png");
+    SDL_Surface *iconSurface = IMG_Load(ICON);
     if (!iconSurface)
     {
         LOG_ERROR("Window icon could not be loaded: %s", IMG_GetError());
@@ -154,6 +151,39 @@ void closeGraphics()
     SDL_Quit();
 }
 
+SDL_Texture *loadTexture(const char *file)
+{
+    SDL_Texture *new_texture = NULL;
+    SDL_Surface *loaded_surface = IMG_Load(file);
+    if (loaded_surface == NULL)
+    {
+        LOG_ERROR("Unable to load image %s! SDL_image Error: %s\n", file, IMG_GetError());
+        return NULL;
+    }
+    new_texture = SDL_CreateTextureFromSurface(renderer, loaded_surface);
+    SDL_FreeSurface(loaded_surface);
+    return new_texture;
+}
+
+void renderTexture(SDL_Texture *texture, int x, int y, int width, int height)
+{
+    SDL_Rect destRect;
+    destRect.x = x;
+    destRect.y = y;
+
+    if (width > 0 && height > 0)
+    {
+        destRect.w = width;
+        destRect.h = height;
+    }
+    else
+    {
+        SDL_QueryTexture(texture, NULL, NULL, &destRect.w, &destRect.h);
+    }
+
+    SDL_RenderCopy(renderer, texture, NULL, &destRect);
+}
+
 GameObject *createGameObject(const char *texture_path, int x, int y, int width, int height)
 {
     GameObject *obj = (GameObject *)malloc(sizeof(GameObject));
@@ -204,23 +234,9 @@ void renderGameObject(GameObject *obj)
     }
 }
 
-void renderTexture(SDL_Texture *texture, int x, int y, int width, int height)
+void setGameObjectOpacity(GameObject *object, float opacity)
 {
-    SDL_Rect destRect;
-    destRect.x = x;
-    destRect.y = y;
-
-    if (width > 0 && height > 0)
-    {
-        destRect.w = width;
-        destRect.h = height;
-    }
-    else
-    {
-        SDL_QueryTexture(texture, NULL, NULL, &destRect.w, &destRect.h);
-    }
-
-    SDL_RenderCopy(renderer, texture, NULL, &destRect);
+    SDL_SetTextureAlphaMod(object->texture, (Uint8)(opacity * 255));
 }
 
 void renderText(const char *text, Font font, Color color, int x, int y)
@@ -251,6 +267,13 @@ void renderText(const char *text, Font font, Color color, int x, int y)
     SDL_DestroyTexture(texture);
 }
 
+void renderLine(int x1, int y1, int x2, int y2, Color color)
+{
+    SDL_Color sdlColor = getSDLColor(color);
+    SDL_SetRenderDrawColor(renderer, sdlColor.r, sdlColor.g, sdlColor.b, sdlColor.a);
+    SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
+}
+
 void clearScreen(Color color)
 {
     SDL_Color sdlColor = getSDLColor(color);
@@ -261,20 +284,6 @@ void clearScreen(Color color)
 void presentScreen()
 {
     SDL_RenderPresent(renderer);
-}
-
-SDL_Texture *loadTexture(const char *file)
-{
-    SDL_Texture *new_texture = NULL;
-    SDL_Surface *loaded_surface = IMG_Load(file);
-    if (loaded_surface == NULL)
-    {
-        LOG_ERROR("Unable to load image %s! SDL_image Error: %s\n", file, IMG_GetError());
-        return NULL;
-    }
-    new_texture = SDL_CreateTextureFromSurface(renderer, loaded_surface);
-    SDL_FreeSurface(loaded_surface);
-    return new_texture;
 }
 
 SDL_Color getSDLColor(Color color)
@@ -319,7 +328,6 @@ TTF_Font *getSDLFont(Font font)
 
 int loadBackground(const char *filePath)
 {
-    // Load the background texture
     backgroundTexture = loadTexture(filePath);
     if (!backgroundTexture)
     {
@@ -392,13 +400,6 @@ void waitForKey()
     }
     if (eventType == EVENT_QUIT)
         exit(0);
-}
-
-void renderLine(int x1, int y1, int x2, int y2, Color color)
-{
-    SDL_Color sdlColor = getSDLColor(color);
-    SDL_SetRenderDrawColor(renderer, sdlColor.r, sdlColor.g, sdlColor.b, sdlColor.a);
-    SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
 }
 
 Uint32 getTicks()
