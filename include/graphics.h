@@ -31,6 +31,7 @@
 #define FIGHTER "../resources/assets/images/fighter.png"
 #define DRONE "../resources/assets/images/drone.png"
 #define BOMBER "../resources/assets/images/bomber.png"
+#define HEALTH_SPACESHIP "../resources/assets/images/health-spaceship.png"
 // Rockets
 #define FIRE_ROCKET "../resources/assets/images/bullet.png"
 #define LARGE_ROCKET "../resources/assets/images/rocket.png"

@@ -5,6 +5,7 @@ Enemy enemies[MAX_ENEMIES];
 Explosion explosions[MAX_EXPLOSIONS];
 Missile playerMissiles[MAX_PLAYER_MISSILES];
 Missile enemyMissiles[MAX_ENEMY_MISSILES];
+GameObject *bonusHeart;
 
 int currentMaxEnemies = MIN_ENEMIES;
 
@@ -54,6 +55,8 @@ void resetGame()
     player.object = createGameObject(SPACESHIP, 340, 640, 120, 120);
     player.lastShootTime = getTicks();
     player.shootCooldown = 200;
+
+    bonusHeart = NULL;
 
     currentMaxEnemies = MIN_ENEMIES;
 }
@@ -180,12 +183,12 @@ int handleEvents()
     case EVENT_KEY_LEFT:
     case EVENT_KEY_A:
         if (player.object->x > 0)
-            moveGameObject(player.object, -5, 0);
+            moveGameObject(player.object, -6, 0);
         break;
     case EVENT_KEY_RIGHT:
     case EVENT_KEY_D:
         if (player.object->x + player.object->width < WINDOW_WIDTH)
-            moveGameObject(player.object, 5, 0);
+            moveGameObject(player.object, 6, 0);
         break;
     case EVENT_KEY_SPACE:
         if (getTicks() - player.lastShootTime >= player.shootCooldown)
@@ -219,6 +222,7 @@ void renderGame()
 {
     renderMovingBackground();
     renderExplosions();
+    renderBonusHeart();
     renderMissiles();
     renderEnemies();
     renderGameObject(player.object);
@@ -355,6 +359,14 @@ void renderExplosions()
     }
 }
 
+void renderBonusHeart()
+{
+    if (bonusHeart != NULL)
+    {
+        renderGameObject(bonusHeart);
+    }
+}
+
 void updateGame()
 {
     updateScoreByInterval();
@@ -362,6 +374,7 @@ void updateGame()
     updateEnemies();
     updateExplosions();
     updateMissiles();
+    updateBonusHeart();
 
     spawnEnemies();
     handleCollisions();
@@ -500,12 +513,27 @@ void updateEnemies()
                     }
                 }
                 break;
+            case ENEMY_HEALTH:
+                moveGameObject(enemies[i].object, 0, BACKGROUND_SPEED + 1);
+                break;
             }
 
             if (enemies[i].object->y > WINDOW_HEIGHT)
             {
                 enemies[i].object = NULL;
             }
+        }
+    }
+}
+
+void updateBonusHeart()
+{
+    if (bonusHeart != NULL)
+    {
+        moveGameObject(bonusHeart, 0, BACKGROUND_SPEED);
+        if (bonusHeart->height >= WINDOW_HEIGHT)
+        {
+            bonusHeart = NULL;
         }
     }
 }
@@ -521,6 +549,7 @@ void spawnEnemies()
 {
     int droneExists = 0;
     int bomberExists = 0;
+    int bonusHeartSpaceshipExists = 0;
 
     // Check if there are already drones or bombers in the enemies array
     for (int i = 0; i < currentMaxEnemies; i++)
@@ -536,6 +565,10 @@ void spawnEnemies()
         {
             bomberExists = 1;
         }
+        if (enemies[i].type == ENEMY_HEALTH)
+        {
+            bonusHeartSpaceshipExists = 1;
+        }
     }
 
     for (int i = 0; i < currentMaxEnemies; i++)
@@ -548,6 +581,14 @@ void spawnEnemies()
             {
                 type = ENEMY_MINE;
                 enemies[i] = createEnemy(type);
+                continue;
+            }
+
+            if (!bonusHeartSpaceshipExists && player.score % 200 <= 50 && player.score >= 200)
+            {
+                type = ENEMY_HEALTH;
+                enemies[i] = createEnemy(type);
+                bonusHeartSpaceshipExists = 1;
                 continue;
             }
 
@@ -590,6 +631,9 @@ Enemy createEnemy(EnemyType type)
     case ENEMY_BOMBER:
         width = 100;
         break;
+    case ENEMY_HEALTH:
+        width = 80;
+        break;
     }
 
     x = findAvailableSpawnSpace(width);
@@ -603,7 +647,7 @@ Enemy createEnemy(EnemyType type)
     case ENEMY_FIGHTER:
         enemy.object = createGameObject(FIGHTER, x, -1 * width, width, width);
         enemy.health = 3;
-        enemy.shootCooldown = player.score > 2000 ? 1000 : 1400;
+        enemy.shootCooldown = player.score > 1500 ? 1000 : 1400; // Shoot faster after score 1500
         enemy.lastShootTime = getTicks();
         break;
     case ENEMY_DRONE:
@@ -613,8 +657,12 @@ Enemy createEnemy(EnemyType type)
     case ENEMY_BOMBER:
         enemy.object = createGameObject(BOMBER, x, -1 * width, width, width);
         enemy.health = 5;
-        enemy.shootCooldown = player.score > 2000 ? 2000 : 1500;
+        enemy.shootCooldown = player.score > 2000 ? 1500 : 2000; // Shoot faster after score 2000
         enemy.lastShootTime = getTicks();
+        break;
+    case ENEMY_HEALTH:
+        enemy.object = createGameObject(HEALTH_SPACESHIP, x, -1 * width, width, width);
+        enemy.health = 2;
         break;
     }
 
@@ -665,6 +713,8 @@ void handleCollisions()
                     case ENEMY_DRONE:
                         player.score += 60;
                         break;
+                    case ENEMY_HEALTH:
+                        bonusHeart = createGameObject(FULL_HEART, enemies[j].object->x + enemies[j].object->width / 2 - 20, enemies[j].object->y + enemies[j].object->height / 2 - 20, 40, 40);
                     }
 
                     createExplosion(enemies[j].object);
@@ -704,11 +754,21 @@ void handleCollisions()
             case ENEMY_DRONE:
                 player.health -= 1.5;
                 break;
+            case ENEMY_HEALTH:
+                player.health -= 0.5;
+                break;
             }
 
             createExplosion(enemies[i].object);
             enemies[i].object = NULL;
         }
+    }
+
+    // Player with bonus heart
+    if (checkCollision(player.object, bonusHeart))
+    {
+        bonusHeart = NULL;
+        player.health += (rand() % 2 + 1) * 0.5;
     }
 
     if (player.health <= 0)

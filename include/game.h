@@ -27,7 +27,8 @@ typedef enum
     ENEMY_MINE,
     ENEMY_FIGHTER,
     ENEMY_DRONE,
-    ENEMY_BOMBER
+    ENEMY_BOMBER,
+    ENEMY_HEALTH
 } EnemyType;
 
 // Enumeration for missile types
@@ -98,6 +99,7 @@ void renderGuide(void);
 void renderEnemies(void);
 void renderMissiles(void);
 void renderExplosions(void);
+void renderBonusHeart(void);
 
 // Game State Updates
 void updateGame(void);
@@ -105,6 +107,7 @@ void updateScoreByInterval(void);
 void updateMissiles(void);
 void updateExplosions(void);
 void updateEnemies(void);
+void updateBonusHeart(void);
 void updateDifficulty(void);
 
 // Game Mechanics
