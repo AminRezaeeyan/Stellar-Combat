@@ -3,8 +3,8 @@
 # Project settings
 PROJECT_NAME = StellarCombat
 CC = gcc
-CFLAGS = -Wall -std=c99 -I./include -I./SDL2/include
-LIBS = -L./SDL2/lib -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
+CFLAGS = -Wall -std=c99 -I./include
+LIBS = -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
 # Output directory for build artifacts
 BUILD_DIR = build
