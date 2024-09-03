@@ -12,10 +12,11 @@ Stellar Combat is an exciting game inspired by the classic River Raid. In this g
 
 ## Screenshots
 
-![Game Logo](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/logo.png) ![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/1.png)
-![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/2.png) ![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/3.png)  
-![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/4.png) ![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/5.png)
-![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/6.png) ![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/7.png)
+| ![Game Logo](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/logo.png) | ![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/1.png) |
+|----------------------------------------------|----------------------------------------------|
+| ![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/2.png) | ![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/3.png) |
+| ![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/4.png) | ![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/5.png) |
+| ![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/6.png) | ![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/7.png) |
 
 ## Installation
 
