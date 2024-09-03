@@ -18,6 +18,6 @@ void addRecord(Record record);
 Record createRecord(int score);
 int readRecords(Record *records, int maxRecords);
 int getHighestScore(void);
-void displayRecords(void);
+void renderRecords(void);
 
 #endif

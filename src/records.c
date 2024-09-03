@@ -85,7 +85,7 @@ int getHighestScore()
     return highestScore;
 }
 
-void displayRecords()
+void renderRecords()
 {
     clearScreen(COLOR_WHITE);
     renderBackground(0, 0);
@@ -100,8 +100,8 @@ void displayRecords()
     int numRecords = readRecords(records, 10);
 
     renderText("Records", fontLG, COLOR_GOLD, 20, 20);
-    renderText("Press any key to go back to the menu", fontSM, COLOR_WHITE, WINDOW_WIDTH - 320, WINDOW_HEIGHT - 50);
-    renderText("Displaying your latest game records", fontSM, COLOR_WHITE, 10, WINDOW_HEIGHT - 50);
+    renderText("Press any key to go back to the menu", fontSM, COLOR_WHITE, WINDOW_WIDTH - 320, WINDOW_HEIGHT - 30);
+    renderText("Displaying your latest game records", fontSM, COLOR_WHITE, 10, WINDOW_HEIGHT - 30);
 
     if (numRecords > 0)
     {
