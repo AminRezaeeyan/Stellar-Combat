@@ -82,7 +82,7 @@ int runGame()
             runGameLoop();
             break;
         case MENU_RECORDS:
-            displayRecords();
+            renderRecords();
             break;
         case MENU_EXIT:
             running = 0;
