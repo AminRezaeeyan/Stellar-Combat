@@ -11,7 +11,7 @@ int currentMaxEnemies = MIN_ENEMIES;
 
 int setUpGame()
 {
-    if (initGraphics() != 0 || initLogger("../error.log") != 0)
+    if (initGraphics() != 0 || initSounds() != 0 || initLogger("../error.log") != 0)
     {
         return -1;
     }
@@ -25,6 +25,7 @@ int setUpGame()
 void closeGame()
 {
     closeGraphics();
+    closeSounds();
     closeLogger();
 }
 
@@ -68,6 +69,8 @@ int runGame()
         return -1;
     }
 
+    playMusic(SOUND_TYPE_BACKGROUND);
+
     int running = 1;
     while (running)
     {
@@ -93,6 +96,8 @@ void runGameLoop()
 {
     resetGame();
     renderGuide();
+
+    setMusicVolume(32); // Decrease the volume of background music when playing
 
     Uint32 startTicks, endTicks, frameTime;
 
@@ -121,12 +126,23 @@ void runGameLoop()
             delay(FRAME_DELAY - frameTime);
         }
     }
+
+    if (player.health <= 0)
+    {
+        pauseMusic();
+        delay(100);
+        playSoundEffect(SOUND_TYPE_GAME_OVER);
+        delay(2000);
+        resumeMusic();
+    }
+
     gameOver();
 }
 
 void gameOver()
 {
-    delay(1500);
+    setMusicVolume(128); // Increase the volume of background music when not playing
+
     Record record = createRecord(player.score);
     addRecord(record);
 
@@ -150,7 +166,8 @@ void gameOver()
         renderText("New Record!", FONT_BANGERS_MD, COLOR_GREEN, 300, 320);
 
     presentScreen();
-    delay(1500);
+
+    delay(2000);
     waitForKey();
 }
 
@@ -193,6 +210,7 @@ int handleEvents()
     case EVENT_KEY_SPACE:
         if (getTicks() - player.lastShootTime >= player.shootCooldown)
         {
+            playSoundEffect(SOUND_TYPE_SHOOT_1);
             for (int i = 0; i < MAX_PLAYER_MISSILES; i++)
             {
                 if (playerMissiles[i].object == NULL)
@@ -302,17 +320,18 @@ void renderGuide()
 {
     clearScreen(COLOR_WHITE);
     renderBackground(0, 0);
-    renderText("Steer:", FONT_BANGERS_SM, COLOR_BLUE, 100, 100);
-    renderText("Shoot:", FONT_BANGERS_SM, COLOR_BLUE, 100, 250);
-    renderText("Pause:", FONT_BANGERS_SM, COLOR_BLUE, 100, 400);
-    renderText("Exit:", FONT_BANGERS_SM, COLOR_BLUE, 100, 550);
+    renderText("Steer:", FONT_BANGERS_SM, COLOR_BLUE, 100, 50);
+    renderText("Shoot:", FONT_BANGERS_SM, COLOR_BLUE, 100, 200);
+    renderText("Pause:", FONT_BANGERS_SM, COLOR_BLUE, 100, 350);
+    renderText("Exit:", FONT_BANGERS_SM, COLOR_BLUE, 100, 500);
 
-    renderText("Use the arrow keys or WASD keys", FONT_BANGERS_SM, COLOR_WHITE, 200, 100);
-    renderText("Press the space bar to fire your weapons", FONT_BANGERS_SM, COLOR_WHITE, 200, 250);
-    renderText("Press P to pause the game", FONT_BANGERS_SM, COLOR_WHITE, 200, 400);
-    renderText("Press ESC to exit the game", FONT_BANGERS_SM, COLOR_WHITE, 200, 550);
+    renderText("Use the arrow keys or WASD keys", FONT_BANGERS_SM, COLOR_WHITE, 200, 50);
+    renderText("Press the space bar to fire your weapons", FONT_BANGERS_SM, COLOR_WHITE, 200, 200);
+    renderText("Press P to pause the game", FONT_BANGERS_SM, COLOR_WHITE, 200, 350);
+    renderText("Press ESC to exit the game", FONT_BANGERS_SM, COLOR_WHITE, 200, 500);
 
-    renderText("Press any key to start the game!", FONT_BANGERS_SM, COLOR_GOLD, 100, 700);
+    renderText("For the best experience, play with sound!", FONT_BANGERS_SM, COLOR_WHITE, 100, 625);
+    renderText("Press any key to start the game!", FONT_BANGERS_SM, COLOR_GOLD, 100, 750);
     presentScreen();
 
     waitForKey();
@@ -462,6 +481,7 @@ void updateEnemies()
                 // Shooting logic
                 if (getTicks() - enemies[i].lastShootTime >= enemies[i].shootCooldown)
                 {
+                    playSoundEffect(SOUND_TYPE_SHOOT_2);
                     for (int j = 0; j < MAX_ENEMY_MISSILES; j++)
                     {
                         if (enemyMissiles[j].object == NULL)
@@ -498,6 +518,7 @@ void updateEnemies()
                 moveGameObject(enemies[i].object, 0, BACKGROUND_SPEED + 1);
                 if (getTicks() - enemies[i].lastShootTime >= enemies[i].shootCooldown)
                 {
+                    playSoundEffect(SOUND_TYPE_SHOOT_2);
                     for (int j = 0; j < MAX_ENEMY_MISSILES; j++)
                     {
                         if (enemyMissiles[j].object == NULL)
@@ -584,7 +605,7 @@ void spawnEnemies()
                 continue;
             }
 
-            if (!bonusHeartSpaceshipExists && player.score % 200 <= 50 && player.score >= 200)
+            if (!bonusHeartSpaceshipExists && player.score % 200 <= 20 && player.score >= 200)
             {
                 type = ENEMY_HEALTH;
                 enemies[i] = createEnemy(type);
@@ -693,6 +714,8 @@ void handleCollisions()
         {
             if (checkCollision(playerMissiles[i].object, enemies[j].object))
             {
+                playSoundEffect(SOUND_TYPE_HIT);
+
                 enemies[j].health--;
                 destroyGameObject(playerMissiles[i].object);
                 playerMissiles[i].object = NULL;
@@ -729,6 +752,8 @@ void handleCollisions()
     {
         if (checkCollision(enemyMissiles[i].object, player.object))
         {
+            playSoundEffect(SOUND_TYPE_HIT);
+
             player.health -= (enemyMissiles[i].type == LARGE_MISSILE ? 1 : 0.5);
             destroyGameObject(enemyMissiles[i].object);
             enemyMissiles[i].object = NULL;
@@ -767,6 +792,7 @@ void handleCollisions()
     // Player with bonus heart
     if (checkCollision(player.object, bonusHeart))
     {
+        playSoundEffect(SOUND_TYPE_BONUS);
         bonusHeart = NULL;
         player.health += (rand() % 2 + 1) * 0.5;
     }
@@ -827,4 +853,5 @@ void createExplosion(GameObject *gameObject)
     }
 
     destroyGameObject(gameObject);
+    playSoundEffect(rand() % (SOUND_TYPE_EXPLOSION_4 - SOUND_TYPE_EXPLOSION_1 + 1) + SOUND_TYPE_EXPLOSION_1);
 }

@@ -6,16 +6,17 @@
 // The functions declared here handle game setup, updates, rendering, event handling, and more.
 
 #include "logger.h"
-#include "utils.h"
 #include "graphics.h"
+#include "sounds.h"
 #include "menu.h"
 #include "records.h"
+#include "utils.h"
 #include <stdlib.h>
 
 // Constants
 #define BACKGROUND_SPEED 2         // Speed of the background movement in pixels per frame
 #define MAX_PLAYER_MISSILES 10     // Maximum number of player's missiles
-#define MAX_ENEMY_MISSILES 100     // Maximum number of enemies' missiles
+#define MAX_ENEMY_MISSILES 20      // Maximum number of enemies' missiles
 #define MAX_ENEMIES 8              // Maximum number of enemies
 #define MIN_ENEMIES 3              /// Minimum number of enemies
 #define MAX_EXPLOSIONS MAX_ENEMIES // Maximum number of explosions
