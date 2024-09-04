@@ -12,30 +12,37 @@ Stellar Combat is an exciting game inspired by the classic River Raid. In this g
 
 ## Screenshots
 
-| ![Game Logo](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/logo.png) | ![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/1.png) |
-|----------------------------------------------|----------------------------------------------|
-| ![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/2.png) | ![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/3.png) |
-| ![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/4.png) | ![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/5.png) |
-| ![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/6.png) | ![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/7.png) |
+|![Game Logo](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/logo.png)|![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/1.png)|
+|-----------------------------------------------|-----------------------------------------------|
+|![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/2.png)|![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/3.png)|
+|![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/4.png)|![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/5.png)|
+|![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/6.png)|![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/7.png)|
 
 ## Installation
 
 To run Stellar Combat, you need to have `make` and the following SDL2 libraries installed: `sdl2`, `sdl_image`, `sdl_ttf`, `sdl_mixer`.
+
+### Option 1: Download Released Version
+
+1. Go to the Releases page.
+2. Download the latest release.
+3. Extract the downloaded file to your desired location.
+
+### Option 2: Clone the Repository
 
 1. Clone the repository:
 
    ```sh
    git clone https://github.com/AminRezaeeyan/Stellar-Combat.git
    cd Stellar-Combat
-   ```
 
-2. Build the game:
+### Build the game:
 
    ```sh
    make
    ```
 
-3. Run the game:
+###Run the game:
    ```sh
    build/StellarCombat
    ```
