@@ -1,5 +1,7 @@
 # Stellar Combat
 
+Basic Programming project of @aut-ce
+
 Stellar Combat is an exciting game inspired by the classic River Raid. In this game, you steer a spaceship and fight against enemies. Developed using the C language and SDL2 library, it features beautiful graphics and amazing sound effects. The game is cross-platform, thanks to its Makefile, and includes a logging system to help developers detect errors quickly.
 
 ## Features
@@ -17,6 +19,8 @@ Stellar Combat is an exciting game inspired by the classic River Raid. In this g
 |![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/2.png)|![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/3.png)|
 |![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/4.png)|![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/5.png)|
 |![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/6.png)|![Game Screenshot](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/7.png)|
+
+![watch the demo game play](https://github.com/AminRezaeeyan/Stellar-Combat/blob/main/screenshots/demo.mp4)
 
 ## Installation
 
